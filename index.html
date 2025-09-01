@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>متابعة العمل - Work Tracker</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Cairo", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      .main-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        margin: 20px auto;
+        padding: 30px;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .project-card {
+        padding: 20px;
+        background: white;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .project-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .priority-high {
+        border-left: 5px solid #dc3545;
+      }
+      .priority-medium {
+        border-left: 5px solid #ffc107;
+      }
+      .priority-low {
+        border-left: 5px solid #28a745;
+      }
+
+      .progress-bar {
+        height: 8px;
+        border-radius: 4px;
+      }
+
+      .schedule-table {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .schedule-table th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px;
+        font-weight: 600;
+      }
+
+      .schedule-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+      }
+
+      .time-slot {
+        font-size: 0.9em;
+        color: #6c757d;
+      }
+
+      .work-type {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: 500;
+        margin: 2px;
+      }
+
+      .core-work {
+        background: #e3f2fd;
+        color: #1976d2;
+      }
+      .extra-work {
+        background: #fff3e0;
+        color: #f57c00;
+      }
+      .fixed-work {
+        background: #e8f5e8;
+        color: #2e7d32;
+      }
+      .rest-time {
+        background: #fce4ec;
+        color: #c2185b;
+      }
+
+      .email-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin-top: 30px;
+      }
+
+      .btn-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        color: white;
+      }
+
+      .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+
+      .stats-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #667eea;
+      }
+
+      .daily-schedule-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .time-block {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-left: 4px solid #667eea;
+      }
+
+      .time-header {
+        font-weight: 600;
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      .task-item {
+        background: white;
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin-bottom: 8px;
+        border: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .task-item:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .task-checkbox {
+        margin-left: 10px;
+      }
+
+      .btn-group .btn {
+        border-radius: 0;
+      }
+
+      .btn-group .btn:first-child {
+        border-top-right-radius: 25px;
+        border-bottom-right-radius: 25px;
+      }
+
+      @media (max-width: 768px) {
+        .main-container {
+          margin: 10px;
+          padding: 20px;
+        }
+
+        .header {
+          padding: 20px;
+        }
+
+        .stats-number {
+          font-size: 2rem;
+        }
+
+        .btn-group {
+          flex-direction: column;
+        }
+
+        .btn-group .btn {
+          border-radius: 25px !important;
+          margin-bottom: 5px;
+        }
+
+        .task-item {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .task-item .work-type {
+          margin-top: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+          <h1 class="mb-0"><i class="fas fa-tasks"></i> متابعة العمل</h1>
+          <p class="mb-0">نظام إدارة المشاريع والمهام</p>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row mb-4">
+          <div class="col-md-3 col-6">
+            <div class="stats-card">
+              <div class="stats-number" id="totalProjects">9</div>
+              <div class="text-muted">المشاريع</div>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stats-card">
+              <div class="stats-number" id="completedTasks">1</div>
+              <div class="text-muted">مكتملة</div>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stats-card">
+              <div class="stats-number" id="totalHours">95</div>
+              <div class="text-muted">ساعات</div>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stats-card">
+              <div class="stats-number" id="dailyFixed">7</div>
+              <div class="text-muted">ساعات يومية</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projects Section -->
+        <h3 class="mb-4">
+          <i class="fas fa-project-diagram"></i> المشاريع المطلوبة
+        </h3>
+        <div class="row" id="projectsContainer">
+          <!-- Projects will be populated by JavaScript -->
+        </div>
+
+        <!-- Daily Schedule -->
+        <h3 class="mb-4 mt-5">
+          <i class="fas fa-calendar-alt"></i> جدول العمل الأسبوعي
+        </h3>
+        <div class="table-responsive">
+          <table class="table schedule-table">
+            <thead>
+              <tr>
+                <th>اليوم</th>
+                <th>نوع اليوم</th>
+                <th>الساعات الأساسية</th>
+                <th>ساعات النوم</th>
+                <th>العمل الإضافي</th>
+                <th>ملاحظات خاصة</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleBody">
+              <!-- Schedule will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Fixed Daily Work -->
+        <h3 class="mb-4 mt-5">
+          <i class="fas fa-repeat"></i> الأعمال اليومية الثابتة
+        </h3>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="project-card">
+              <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-code"></i> كودنجر</h5>
+                <p class="card-text">ساعتين يومياً</p>
+                <span class="work-type fixed-work">عمل ثابت</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="project-card">
+              <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-cogs"></i> كرين</h5>
+                <p class="card-text">ساعتين يومياً</p>
+                <span class="work-type fixed-work">عمل ثابت</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="project-card">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <i class="fas fa-graduation-cap"></i> الأكاديمية
+                </h5>
+                <p class="card-text">3 ساعات أسبوعياً</p>
+                <span class="work-type fixed-work">عمل ثابت</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Daily Tasks -->
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <div class="project-card">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <i class="fas fa-share-alt"></i> سوشيال ميديا
+                </h5>
+                <p class="card-text">نصف ساعة يومياً لـ UP, UPC</p>
+                <span class="work-type extra-work">إضافي</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="project-card">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <i class="fas fa-laptop-code"></i> Django
+                </h5>
+                <p class="card-text">ساعة يومياً</p>
+                <span class="work-type extra-work">إضافي</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Schedule Navigation -->
+        <div class="mt-5">
+          <h3 class="mb-4">
+            <i class="fas fa-calendar-days"></i> الجداول اليومية
+          </h3>
+          <div class="row mb-4">
+            <div class="col-12">
+              <div class="btn-group w-100" role="group">
+                <button
+                  type="button"
+                  class="btn btn-custom active"
+                  onclick="showDailySchedule('2024-09-01')"
+                >
+                  1/9
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  onclick="showDailySchedule('2024-09-02')"
+                >
+                  2/9
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  onclick="showDailySchedule('2024-09-03')"
+                >
+                  3/9
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  onclick="showDailySchedule('2024-09-04')"
+                >
+                  4/9
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  onclick="showDailySchedule('2024-09-05')"
+                >
+                  5/9
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  onclick="showDailySchedule('2024-09-06')"
+                >
+                  6/9
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  onclick="showDailySchedule('2024-09-07')"
+                >
+                  7/9
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  onclick="showDailySchedule('2024-09-08')"
+                >
+                  8/9
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  onclick="showDailySchedule('2024-09-09')"
+                >
+                  9/9
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  onclick="showDailySchedule('2024-09-10')"
+                >
+                  10/9
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daily Schedule Content -->
+          <div id="dailyScheduleContent">
+            <!-- Content will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Email Section -->
+        <div class="email-section">
+          <h4><i class="fas fa-envelope"></i> إرسال تقرير يومي</h4>
+          <p>أرسل تقرير بالمهام المكتملة والمتبقية</p>
+          <button class="btn btn-light" onclick="sendDailyReport()">
+            <i class="fas fa-paper-plane"></i> إرسال التقرير
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Project data
+      const projects = [
+        {
+          name: "موقع ساتايلي اونلاين",
+          progress: 90,
+          remaining: "مرتين × 3 ساعات",
+          deadline: "4 أيام",
+          priority: "high",
+          icon: "fas fa-globe",
+        },
+        {
+          name: "تعديل موقع كورسنا",
+          progress: 0,
+          remaining: "مرة × 3 ساعات",
+          deadline: "غداً",
+          priority: "high",
+          icon: "fas fa-edit",
+        },
+        {
+          name: "فيديو دكتور بسنت",
+          progress: 0,
+          remaining: "نصف ساعة",
+          deadline: "آخر الأسبوع",
+          priority: "medium",
+          icon: "fas fa-video",
+        },
+        {
+          name: "موقع دكتور شريف",
+          progress: 0,
+          remaining: "4 مرات × 3 ساعات",
+          deadline: "أول الأسبوع القادم",
+          priority: "medium",
+          icon: "fas fa-user-md",
+        },
+        {
+          name: "موقع استاذ النجار",
+          progress: 0,
+          remaining: "3 مرات × 3 ساعات",
+          deadline: "الأسبوع القادم",
+          priority: "medium",
+          icon: "fas fa-hammer",
+        },
+        {
+          name: "موقع كتبي",
+          progress: 0,
+          remaining: "4 مرات × 3 ساعات",
+          deadline: "آخر الأسبوع القادم",
+          priority: "low",
+          icon: "fas fa-book",
+        },
+        {
+          name: "عادل العقارية",
+          progress: 0,
+          remaining: "مرة × 3 ساعات",
+          deadline: "الجمعة ليلاً",
+          priority: "medium",
+          icon: "fas fa-building",
+        },
+        {
+          name: "مشروع ERB",
+          progress: 10,
+          remaining: "10 مرات × 3 ساعات",
+          deadline: "نصف الشهر القادم",
+          priority: "high",
+          icon: "fas fa-chart-line",
+        },
+        {
+          name: "مشروع أبو زيد",
+          progress: 75,
+          remaining: "مرة × 3 ساعات",
+          deadline: "الخميس",
+          priority: "high",
+          icon: "fas fa-briefcase",
+        },
+      ];
+
+      // Schedule data
+      const weekSchedule = [
+        {
+          day: "الأحد",
+          type: "يوم كامل",
+          coreHours: "5م - 11م",
+          sleepHours: "12ص - 9ص",
+          extraHours: "10ص - 5م",
+          notes: "يوم عمل عادي",
+        },
+        {
+          day: "الاثنين",
+          type: "يوم كامل",
+          coreHours: "5م - 11م",
+          sleepHours: "12ص - 9ص",
+          extraHours: "10ص - 5م",
+          notes: "يوم عمل عادي",
+        },
+        {
+          day: "الثلاثاء",
+          type: "يوم كامل",
+          coreHours: "5م - 11م",
+          sleepHours: "12ص - 9ص",
+          extraHours: "10ص - 5م",
+          notes: "يوم عمل عادي",
+        },
+        {
+          day: "الأربعاء",
+          type: "يوم كامل",
+          coreHours: "5م - 11م",
+          sleepHours: "12ص - 9ص",
+          extraHours: "10ص - 5م",
+          notes: "يوم عمل عادي",
+        },
+        {
+          day: "الخميس",
+          type: "نصف يوم",
+          coreHours: "5م - 10م",
+          sleepHours: "12ص - 9ص",
+          extraHours: "محدود",
+          notes: "سفر 10م لكفر الشيخ",
+        },
+        {
+          day: "الجمعة",
+          type: "راحة",
+          coreHours: "---",
+          sleepHours: "مرن",
+          extraHours: "---",
+          notes: "غير ملتزم بأي شيء",
+        },
+        {
+          day: "السبت",
+          type: "نصف يوم",
+          coreHours: "5م - 11م",
+          sleepHours: "12ص - 9ص",
+          extraHours: "محدود",
+          notes: "سفر حتى 5م ثم العمل",
+        },
+      ];
+
+      // Populate projects
+      function populateProjects() {
+        const container = document.getElementById("projectsContainer");
+        projects.forEach((project, index) => {
+          const priorityClass = `priority-${project.priority}`;
+          const progressColor =
+            project.progress > 75
+              ? "success"
+              : project.progress > 25
+              ? "warning"
+              : "danger";
+
+          const projectCard = `
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card project-card ${priorityClass}">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="${project.icon}"></i> ${project.name}
+                                </h5>
+                                <div class="mb-3">
+                                    <div class="progress">
+                                        <div class="progress-bar bg-${progressColor}" style="width: ${project.progress}%"></div>
+                                    </div>
+                                    <small class="text-muted">${project.progress}% مكتمل</small>
+                                </div>
+                                <p class="card-text">
+                                    <strong>المتبقي:</strong> ${project.remaining}<br>
+                                    <strong>الموعد:</strong> ${project.deadline}
+                                </p>
+                                <button class="btn btn-sm btn-custom" onclick="updateProgress(${index})">
+                                    تحديث التقدم
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          container.innerHTML += projectCard;
+        });
+      }
+
+      // Populate schedule
+      function populateSchedule() {
+        const tbody = document.getElementById("scheduleBody");
+        weekSchedule.forEach((day) => {
+          const typeClass =
+            day.type === "يوم كامل"
+              ? "core-work"
+              : day.type === "نصف يوم"
+              ? "extra-work"
+              : "rest-time";
+
+          const row = `
+                    <tr>
+                        <td><strong>${day.day}</strong></td>
+                        <td><span class="work-type ${typeClass}">${day.type}</span></td>
+                        <td class="time-slot">${day.coreHours}</td>
+                        <td class="time-slot">${day.sleepHours}</td>
+                        <td class="time-slot">${day.extraHours}</td>
+                        <td><small class="text-muted">${day.notes}</small></td>
+                    </tr>
+                `;
+          tbody.innerHTML += row;
+        });
+      }
+
+      // Daily schedules with task distribution
+      const dailySchedules = {
+        "2024-09-01": {
+          // الاثنين 1/9
+          title: "الاثنين 1 سبتمبر 2024",
+          type: "يوم كامل",
+          blocks: [
+            {
+              time: "9:00 - 10:00 صباحاً",
+              title: "الاستيقاظ والإفطار",
+              tasks: ["الاستيقاظ", "الفطار", "التحضير لليوم"],
+              type: "personal",
+            },
+            {
+              time: "10:00 - 1:00 ظهراً",
+              title: "العمل الإضافي الصباحي",
+              tasks: [
+                "كودنجر - ساعة",
+                "Django - ساعة",
+                "سوشيال ميديا UP/UPC - نصف ساعة",
+                "موقع كورسنا - نصف ساعة (بداية)",
+              ],
+              type: "extra",
+            },
+            {
+              time: "1:00 - 2:00 ظهراً",
+              title: "الغداء والراحة",
+              tasks: ["الغداء", "راحة قصيرة"],
+              type: "personal",
+            },
+            {
+              time: "2:00 - 5:00 عصراً",
+              title: "العمل الإضافي المسائي",
+              tasks: ["موقع كورسنا - ساعتين ونصف (إنهاء)", "كرين - نصف ساعة"],
+              type: "extra",
+            },
+            {
+              time: "5:00 - 11:00 مساءً",
+              title: "الساعات الأساسية",
+              tasks: [
+                "موقع ساتايلي - 3 ساعات (مرة أولى)",
+                "كرين - ساعة ونصف",
+                "كودنجر - ساعة ونصف",
+              ],
+              type: "core",
+            },
+            {
+              time: "11:00 - 12:00 منتصف الليل",
+              title: "العشاء والاستعداد للنوم",
+              tasks: ["العشاء", "الاستعداد للنوم"],
+              type: "personal",
+            },
+          ],
+        },
+        "2024-09-02": {
+          // الثلاثاء 2/9
+          title: "الثلاثاء 2 سبتمبر 2024",
+          type: "يوم كامل",
+          blocks: [
+            {
+              time: "9:00 - 10:00 صباحاً",
+              title: "الاستيقاظ والإفطار",
+              tasks: ["الاستيقاظ", "الفطار", "التحضير لليوم"],
+              type: "personal",
+            },
+            {
+              time: "10:00 - 1:00 ظهراً",
+              title: "العمل الإضافي الصباحي",
+              tasks: [
+                "كودنجر - ساعة",
+                "Django - ساعة",
+                "سوشيال ميديا UP/UPC - نصف ساعة",
+                "فيديو دكتور بسنت - نصف ساعة (إنهاء)",
+              ],
+              type: "extra",
+            },
+            {
+              time: "1:00 - 2:00 ظهراً",
+              title: "الغداء والراحة",
+              tasks: ["الغداء", "راحة قصيرة"],
+              type: "personal",
+            },
+            {
+              time: "2:00 - 5:00 عصراً",
+              title: "العمل الإضافي المسائي",
+              tasks: ["موقع دكتور شريف - 3 ساعات (مرة أولى)"],
+              type: "extra",
+            },
+            {
+              time: "5:00 - 11:00 مساءً",
+              title: "الساعات الأساسية",
+              tasks: [
+                "موقع ساتايلي - 3 ساعات (مرة ثانية - إنهاء)",
+                "كرين - ساعتين",
+                "كودنجر - ساعة",
+              ],
+              type: "core",
+            },
+            {
+              time: "11:00 - 12:00 منتصف الليل",
+              title: "العشاء والاستعداد للنوم",
+              tasks: ["العشاء", "الاستعداد للنوم"],
+              type: "personal",
+            },
+          ],
+        },
+        "2024-09-03": {
+          // الأربعاء 3/9
+          title: "الأربعاء 3 سبتمبر 2024",
+          type: "يوم كامل",
+          blocks: [
+            {
+              time: "9:00 - 10:00 صباحاً",
+              title: "الاستيقاظ والإفطار",
+              tasks: ["الاستيقاظ", "الفطار", "التحضير لليوم"],
+              type: "personal",
+            },
+            {
+              time: "10:00 - 1:00 ظهراً",
+              title: "العمل الإضافي الصباحي",
+              tasks: [
+                "كودنجر - ساعة",
+                "Django - ساعة",
+                "سوشيال ميديا UP/UPC - نصف ساعة",
+                "مشروع أبو زيد - نصف ساعة",
+              ],
+              type: "extra",
+            },
+            {
+              time: "1:00 - 2:00 ظهراً",
+              title: "الغداء والراحة",
+              tasks: ["الغداء", "راحة قصيرة"],
+              type: "personal",
+            },
+            {
+              time: "2:00 - 5:00 عصراً",
+              title: "العمل الإضافي المسائي",
+              tasks: ["موقع دكتور شريف - 3 ساعات (مرة ثانية)"],
+              type: "extra",
+            },
+            {
+              time: "5:00 - 11:00 مساءً",
+              title: "الساعات الأساسية",
+              tasks: [
+                "مشروع ERB - 3 ساعات (مرة أولى)",
+                "كرين - ساعتين",
+                "كودنجر - ساعة",
+              ],
+              type: "core",
+            },
+            {
+              time: "11:00 - 12:00 منتصف الليل",
+              title: "العشاء والاستعداد للنوم",
+              tasks: ["العشاء", "الاستعداد للنوم"],
+              type: "personal",
+            },
+          ],
+        },
+        "2024-09-04": {
+          // الخميس 4/9
+          title: "الخميس 4 سبتمبر 2024",
+          type: "نصف يوم - سفر",
+          blocks: [
+            {
+              time: "9:00 - 10:00 صباحاً",
+              title: "الاستيقاظ والإفطار",
+              tasks: ["الاستيقاظ", "الفطار", "التحضير للسفر"],
+              type: "personal",
+            },
+            {
+              time: "10:00 - 1:00 ظهراً",
+              title: "العمل قبل السفر",
+              tasks: [
+                "كودنجر - ساعة",
+                "Django - ساعة",
+                "سوشيال ميديا UP/UPC - نصف ساعة",
+                "مشروع أبو زيد - ساعتين ونصف (إنهاء)",
+              ],
+              type: "extra",
+            },
+            {
+              time: "1:00 - 5:00 عصراً",
+              title: "الغداء والاستعداد للسفر",
+              tasks: ["الغداء", "التحضير للسفر", "راحة"],
+              type: "personal",
+            },
+            {
+              time: "5:00 - 10:00 مساءً",
+              title: "الساعات الأساسية",
+              tasks: [
+                "موقع دكتور شريف - 3 ساعات (مرة ثالثة)",
+                "كرين - ساعة",
+                "كودنجر - ساعة",
+              ],
+              type: "core",
+            },
+            {
+              time: "10:00 مساءً فما فوق",
+              title: "السفر لكفر الشيخ",
+              tasks: ["السفر لكفر الشيخ", "راحة"],
+              type: "travel",
+            },
+          ],
+        },
+        "2024-09-05": {
+          // الجمعة 5/9
+          title: "الجمعة 5 سبتمبر 2024",
+          type: "راحة",
+          blocks: [
+            {
+              time: "مرن",
+              title: "يوم راحة كامل",
+              tasks: ["راحة تامة", "غير ملتزم بأي عمل"],
+              type: "personal",
+            },
+            {
+              time: "11:00 مساءً (اختياري)",
+              title: "عادل العقارية",
+              tasks: ["عادل العقارية - 3 ساعات (إنهاء)"],
+              type: "optional",
+            },
+          ],
+        },
+        "2024-09-06": {
+          // السبت 6/9
+          title: "السبت 6 سبتمبر 2024",
+          type: "نصف يوم - سفر",
+          blocks: [
+            {
+              time: "9:00 - 5:00 عصراً",
+              title: "سفر وراحة",
+              tasks: ["السفر والعودة", "راحة"],
+              type: "travel",
+            },
+            {
+              time: "5:00 - 11:00 مساءً",
+              title: "الساعات الأساسية",
+              tasks: [
+                "موقع دكتور شريف - 3 ساعات (مرة رابعة - إنهاء)",
+                "كرين - ساعتين",
+                "كودنجر - ساعة",
+              ],
+              type: "core",
+            },
+          ],
+        },
+        "2024-09-07": {
+          // الأحد 7/9
+          title: "الأحد 7 سبتمبر 2024",
+          type: "يوم كامل",
+          blocks: [
+            {
+              time: "9:00 - 10:00 صباحاً",
+              title: "الاستيقاظ والإفطار",
+              tasks: ["الاستيقاظ", "الفطار", "التحضير لليوم"],
+              type: "personal",
+            },
+            {
+              time: "10:00 - 1:00 ظهراً",
+              title: "العمل الإضافي الصباحي",
+              tasks: [
+                "كودنجر - ساعة",
+                "Django - ساعة",
+                "سوشيال ميديا UP/UPC - نصف ساعة",
+                "الأكاديمية - نصف ساعة",
+              ],
+              type: "extra",
+            },
+            {
+              time: "1:00 - 2:00 ظهراً",
+              title: "الغداء والراحة",
+              tasks: ["الغداء", "راحة قصيرة"],
+              type: "personal",
+            },
+            {
+              time: "2:00 - 5:00 عصراً",
+              title: "العمل الإضافي المسائي",
+              tasks: ["موقع استاذ النجار - 3 ساعات (مرة أولى)"],
+              type: "extra",
+            },
+            {
+              time: "5:00 - 11:00 مساءً",
+              title: "الساعات الأساسية",
+              tasks: [
+                "مشروع ERB - 3 ساعات (مرة ثانية)",
+                "كرين - ساعتين",
+                "كودنجر - ساعة",
+              ],
+              type: "core",
+            },
+            {
+              time: "11:00 - 12:00 منتصف الليل",
+              title: "العشاء والاستعداد للنوم",
+              tasks: ["العشاء", "الاستعداد للنوم"],
+              type: "personal",
+            },
+          ],
+        },
+        "2024-09-08": {
+          // الاثنين 8/9
+          title: "الاثنين 8 سبتمبر 2024",
+          type: "يوم كامل",
+          blocks: [
+            {
+              time: "9:00 - 10:00 صباحاً",
+              title: "الاستيقاظ والإفطار",
+              tasks: ["الاستيقاظ", "الفطار", "التحضير لليوم"],
+              type: "personal",
+            },
+            {
+              time: "10:00 - 1:00 ظهراً",
+              title: "العمل الإضافي الصباحي",
+              tasks: [
+                "كودنجر - ساعة",
+                "Django - ساعة",
+                "سوشيال ميديا UP/UPC - نصف ساعة",
+                "الأكاديمية - ساعتين ونصف",
+              ],
+              type: "extra",
+            },
+            {
+              time: "1:00 - 2:00 ظهراً",
+              title: "الغداء والراحة",
+              tasks: ["الغداء", "راحة قصيرة"],
+              type: "personal",
+            },
+            {
+              time: "2:00 - 5:00 عصراً",
+              title: "العمل الإضافي المسائي",
+              tasks: ["موقع استاذ النجار - 3 ساعات (مرة ثانية)"],
+              type: "extra",
+            },
+            {
+              time: "5:00 - 11:00 مساءً",
+              title: "الساعات الأساسية",
+              tasks: [
+                "مشروع ERB - 3 ساعات (مرة ثالثة)",
+                "كرين - ساعتين",
+                "كودنجر - ساعة",
+              ],
+              type: "core",
+            },
+            {
+              time: "11:00 - 12:00 منتصف الليل",
+              title: "العشاء والاستعداد للنوم",
+              tasks: ["العشاء", "الاستعداد للنوم"],
+              type: "personal",
+            },
+          ],
+        },
+        "2024-09-09": {
+          // الثلاثاء 9/9
+          title: "الثلاثاء 9 سبتمبر 2024",
+          type: "يوم كامل",
+          blocks: [
+            {
+              time: "9:00 - 10:00 صباحاً",
+              title: "الاستيقاظ والإفطار",
+              tasks: ["الاستيقاظ", "الفطار", "التحضير لليوم"],
+              type: "personal",
+            },
+            {
+              time: "10:00 - 1:00 ظهراً",
+              title: "العمل الإضافي الصباحي",
+              tasks: [
+                "كودنجر - ساعة",
+                "Django - ساعة",
+                "سوشيال ميديا UP/UPC - نصف ساعة",
+                "موقع كتبي - نصف ساعة (بداية)",
+              ],
+              type: "extra",
+            },
+            {
+              time: "1:00 - 2:00 ظهراً",
+              title: "الغداء والراحة",
+              tasks: ["الغداء", "راحة قصيرة"],
+              type: "personal",
+            },
+            {
+              time: "2:00 - 5:00 عصراً",
+              title: "العمل الإضافي المسائي",
+              tasks: ["موقع استاذ النجار - 3 ساعات (مرة ثالثة - إنهاء)"],
+              type: "extra",
+            },
+            {
+              time: "5:00 - 11:00 مساءً",
+              title: "الساعات الأساسية",
+              tasks: [
+                "مشروع ERB - 3 ساعات (مرة رابعة)",
+                "كرين - ساعتين",
+                "كودنجر - ساعة",
+              ],
+              type: "core",
+            },
+            {
+              time: "11:00 - 12:00 منتصف الليل",
+              title: "العشاء والاستعداد للنوم",
+              tasks: ["العشاء", "الاستعداد للنوم"],
+              type: "personal",
+            },
+          ],
+        },
+        "2024-09-10": {
+          // الأربعاء 10/9
+          title: "الأربعاء 10 سبتمبر 2024",
+          type: "يوم كامل",
+          blocks: [
+            {
+              time: "9:00 - 10:00 صباحاً",
+              title: "الاستيقاظ والإفطار",
+              tasks: ["الاستيقاظ", "الفطار", "التحضير لليوم"],
+              type: "personal",
+            },
+            {
+              time: "10:00 - 1:00 ظهراً",
+              title: "العمل الإضافي الصباحي",
+              tasks: [
+                "كودنجر - ساعة",
+                "Django - ساعة",
+                "سوشيال ميديا UP/UPC - نصف ساعة",
+                "موقع كتبي - نصف ساعة",
+              ],
+              type: "extra",
+            },
+            {
+              time: "1:00 - 2:00 ظهراً",
+              title: "الغداء والراحة",
+              tasks: ["الغداء", "راحة قصيرة"],
+              type: "personal",
+            },
+            {
+              time: "2:00 - 5:00 عصراً",
+              title: "العمل الإضافي المسائي",
+              tasks: ["موقع كتبي - 3 ساعات (مرة أولى)"],
+              type: "extra",
+            },
+            {
+              time: "5:00 - 11:00 مساءً",
+              title: "الساعات الأساسية",
+              tasks: [
+                "مشروع ERB - 3 ساعات (مرة خامسة)",
+                "كرين - ساعتين",
+                "كودنجر - ساعة",
+              ],
+              type: "core",
+            },
+            {
+              time: "11:00 - 12:00 منتصف الليل",
+              title: "العشاء والاستعداد للنوم",
+              tasks: ["العشاء", "الاستعداد للنوم"],
+              type: "personal",
+            },
+          ],
+        },
+      };
+
+      // Show daily schedule
+      function showDailySchedule(date) {
+        const schedule = dailySchedules[date];
+        if (!schedule) return;
+
+        // Update active button
+        document.querySelectorAll(".btn-group .btn").forEach((btn) => {
+          btn.classList.remove("btn-custom", "active");
+          btn.classList.add("btn-outline-secondary");
+        });
+        event.target.classList.remove("btn-outline-secondary");
+        event.target.classList.add("btn-custom", "active");
+
+        const content = document.getElementById("dailyScheduleContent");
+        content.innerHTML = `
+                <div class="daily-schedule-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4><i class="fas fa-calendar"></i> ${
+                          schedule.title
+                        }</h4>
+                        <span class="work-type ${
+                          schedule.type === "يوم كامل"
+                            ? "core-work"
+                            : "extra-work"
+                        }">${schedule.type}</span>
+                    </div>
+                    
+                    ${schedule.blocks
+                      .map(
+                        (block) => `
+                        <div class="time-block">
+                            <div class="time-header">
+                                <i class="fas fa-clock"></i> ${block.time} - ${
+                          block.title
+                        }
+                            </div>
+                            ${block.tasks
+                              .map(
+                                (task) => `
+                                <div class="task-item">
+                                    <div>
+                                        <input type="checkbox" class="task-checkbox" id="task_${Math.random()
+                                          .toString(36)
+                                          .substr(2, 9)}">
+                                        <span>${task}</span>
+                                    </div>
+                                    <span class="work-type ${getTaskTypeClass(
+                                      block.type
+                                    )}">${getTaskTypeLabel(block.type)}</span>
+                                </div>
+                            `
+                              )
+                              .join("")}
+                        </div>
+                    `
+                      )
+                      .join("")}
+                    
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h6><i class="fas fa-chart-pie"></i> ملخص اليوم:</h6>
+                        <div class="row">
+                            <div class="col-md-3 col-6 text-center">
+                                <strong>${getTotalHours(
+                                  schedule,
+                                  "core"
+                                )}</strong><br>
+                                <small>ساعات أساسية</small>
+                            </div>
+                            <div class="col-md-3 col-6 text-center">
+                                <strong>${getTotalHours(
+                                  schedule,
+                                  "extra"
+                                )}</strong><br>
+                                <small>ساعات إضافية</small>
+                            </div>
+                            <div class="col-md-3 col-6 text-center">
+                                <strong>${getTotalTasks(schedule)}</strong><br>
+                                <small>مهام</small>
+                            </div>
+                            <div class="col-md-3 col-6 text-center">
+                                <strong>${getProjectsCount(
+                                  schedule
+                                )}</strong><br>
+                                <small>مشاريع</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      // Helper functions for daily schedule
+      function getTaskTypeClass(type) {
+        switch (type) {
+          case "core":
+            return "core-work";
+          case "extra":
+            return "extra-work";
+          case "personal":
+            return "rest-time";
+          default:
+            return "fixed-work";
+        }
+      }
+
+      function getTaskTypeLabel(type) {
+        switch (type) {
+          case "core":
+            return "أساسي";
+          case "extra":
+            return "إضافي";
+          case "personal":
+            return "شخصي";
+          default:
+            return "ثابت";
+        }
+      }
+
+      function getTotalHours(schedule, type) {
+        let total = 0;
+        schedule.blocks.forEach((block) => {
+          if (block.type === type) {
+            const [start, end] = block.time.split(" - ");
+            // Simple calculation - you can make this more precise
+            if (type === "core") total += 6; // 5pm to 11pm
+            else if (type === "extra") total += 3; // approximate
+          }
+        });
+        return total;
+      }
+
+      function getTotalTasks(schedule) {
+        return schedule.blocks.reduce(
+          (total, block) => total + block.tasks.length,
+          0
+        );
+      }
+
+      function getProjectsCount(schedule) {
+        const projectTasks = schedule.blocks.flatMap((block) =>
+          block.tasks.filter(
+            (task) =>
+              task.includes("موقع") ||
+              task.includes("مشروع") ||
+              task.includes("فيديو")
+          )
+        );
+        return projectTasks.length;
+      }
+
+      // Send daily report
+      function sendDailyReport() {
+        const completedToday = projects.filter(
+          (p) => p.progress === 100
+        ).length;
+        const inProgress = projects.filter(
+          (p) => p.progress > 0 && p.progress < 100
+        ).length;
+        const pending = projects.filter((p) => p.progress === 0).length;
+
+        const subject = `تقرير العمل اليومي - ${new Date().toLocaleDateString(
+          "ar-EG"
+        )}`;
+        const body = `السلام عليكم،
+
+تقرير العمل لليوم:
+
+📊 الإحصائيات:
+- مشاريع مكتملة: ${completedToday}
+- مشاريع قيد التنفيذ: ${inProgress}
+- مشاريع معلقة: ${pending}
+
+📋 المشاريع عالية الأولوية:
+${projects
+  .filter((p) => p.priority === "high")
+  .map((p) => `- ${p.name}: ${p.progress}% مكتمل`)
+  .join("\n")}
+
+💼 الأعمال اليومية الثابتة:
+- كودنجر: ساعتين ✓
+- كرين: ساعتين ✓
+- سوشيال ميديا: نصف ساعة ✓
+- Django: ساعة ✓
+
+مع أطيب التحيات`;
+
+        const mailtoLink = `mailto:eltaroon1082000@gmail.com?subject=${encodeURIComponent(
+          subject
+        )}&body=${encodeURIComponent(body)}`;
+        window.open(mailtoLink);
+      }
+
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", function () {
+        populateProjects();
+        populateSchedule();
+
+        // Show first daily schedule by default
+        showDailySchedule("2024-09-01");
+
+        // Update time display
+        setInterval(function () {
+          const now = new Date();
+          const timeDisplay = document.getElementById("currentTime");
+          if (timeDisplay) {
+            timeDisplay.textContent = now.toLocaleTimeString("ar-EG");
+          }
+        }, 1000);
+      });
+
+      // Update project progress
+      function updateProgress(index) {
+        const newProgress = prompt(
+          `أدخل نسبة التقدم الجديدة لمشروع "${projects[index].name}" (0-100):`
+        );
+        if (
+          newProgress !== null &&
+          !isNaN(newProgress) &&
+          newProgress >= 0 &&
+          newProgress <= 100
+        ) {
+          projects[index].progress = parseInt(newProgress);
+          location.reload(); // Simple reload to update display
+        }
+      }
+
+      // Add current time display
+      document.addEventListener("DOMContentLoaded", function () {
+        const header = document.querySelector(".header");
+        const timeDiv = document.createElement("div");
+        timeDiv.innerHTML = '<small id="currentTime"></small>';
+        header.appendChild(timeDiv);
+      });
+
+      // Auto-save progress (simulated)
+      function autoSave() {
+        console.log("تم حفظ التقدم تلقائياً");
+      }
+
+      setInterval(autoSave, 30000); // Save every 30 seconds
+    </script>
+  </body>
+</html>
